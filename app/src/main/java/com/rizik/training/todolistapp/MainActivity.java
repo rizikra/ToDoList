@@ -71,16 +71,25 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        // Langkah 12.4 Buat OnItemClickListener dan panggil method showDialogEdit()
+        lvTodos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Panggil method showDialogEdit()
+                showDialogEdit(position);
+            }
+        });
     }
 
 
 
-    // Langkah 1 Siapkan Data
+    // Langkah 1 Siapkan Dummy Data
     private void createTodos(){
-        data.add("Coding");
         data.add("Eat");
         data.add("Sleep");
-        data.add("Traveling");
+        data.add("Football");
+        data.add("Coding");
     }
 
     // Langkah 7 Buat Method ketika FAB Add di click untuk menambahkan data
