@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Langkah 11.2 Panggil method reGeneratedAndSortSP()
                 // reGeneratedAndSortSP();
-                reGenerateAndShortSP();
+                reGenerateAndSortSP();
 
                 // suruh adapter untuk notify ke List View kalau data telah berubah
                 // merefresh list view
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
         // Langkah 11.1 Fix Error di langkah 10 untuk mengurutkan kembali key dan value di dalam Shared Preference
-    private void reGenerateAndShortSP(){
+    private void reGenerateAndSortSP(){
         SharedPreferences todosPref = getSharedPreferences("todosPref", MODE_PRIVATE);
         SharedPreferences.Editor todosPrefEditor = todosPref.edit();
         // Hapus semua data di Shared Preference
@@ -216,6 +216,50 @@ public class MainActivity extends AppCompatActivity {
         }*/
          todosPrefEditor.apply();
 
+    }
+
+    // Langkah 12.1 Membuat fitur Edit Item
+    // Buat method untuk menampilkan AlertDialog data yang hendak diedit
+
+    private void showDialogEdit (final int position){
+        View view = View.inflate(this, R.layout.dialog_add_view, null);
+
+        // EditText ini dideklarasikan di atas di dalam class
+        edtTodo = view.findViewById(R.id.edt_todo);
+
+        // EditText diisi dengan data dari list view yang dipilih berdasarkan parameter position
+        edtTodo.setText(arrayAdapter.getItem(position)); // Diambil dari adapter list view
+
+        //edtTodo.setText(data.get(position)); //diambil dari array list : alternatif dari cara diatas ini.
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("So, actually what you want to do ?");
+        dialog.setView(view);
+        dialog.setPositiveButton("Change It", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                // Langkah 12.3 Panggil method editItem() di bawah yang telah dibuat pada langkah 12.2
+                editItem (position, edtTodo.getText().toString());
+
+            }
+        });
+        dialog.setNegativeButton("Cancel", null);
+        dialog.create();
+        dialog.show();
+
+    }
+
+    // Langkah 12.2 Buat method untuk mengubah item dengan parameter position dan text item baru
+    private void editItem(int position, String newItem){
+        // Set data di array dengan value baru berdasarkan index/position
+        data.set (position, newItem);
+
+        // Jangan lupa Shared Preferences di generate ulang
+        reGenerateAndSortSP();
+
+        // Refresh list view
+        arrayAdapter.notifyDataSetChanged();
     }
 
 }
