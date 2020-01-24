@@ -139,8 +139,12 @@ public class MainActivity extends AppCompatActivity {
                 // hapus item dari array list data berdasarkan index/position dari item di list view
 
                 data.remove(index); // index didapat position parameter
-                // suruh adapter untuk notify ke List View kalau data telah berubah
 
+                // Langkah 11.2 Panggil method reGeneratedAndSortSP()
+                // reGeneratedAndSortSP();
+                reGenerateAndShortSP();
+
+                // suruh adapter untuk notify ke List View kalau data telah berubah
                 // merefresh list view
                 arrayAdapter.notifyDataSetChanged();
             }
@@ -169,10 +173,10 @@ public class MainActivity extends AppCompatActivity {
     private void loadDataFromPrefefrences(){
         SharedPreferences todosPref = getSharedPreferences("todosPref", MODE_PRIVATE);
         // Cek dalam SP ada data atau tidak
-        if (todosPref.getAll().size() > 0){
+        if (todosPref.getAll().size() > 0){ //2
 
             // Masukkan semua data di SP ke array list data
-            for (int i = 0; i < todosPref.getAll().size(); i++){
+            for (int i = 0; i < todosPref.getAll().size(); i++){// i < 2
                 String key = String.valueOf(i);
                 String item = todosPref.getString(key, null);
                 data.add(item);
@@ -189,6 +193,30 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor todosPrefEditor = todosPref.edit();
         todosPrefEditor.remove(key);
         todosPrefEditor.apply();
-        }
     }
+
+        // Langkah 11.1 Fix Error di langkah 10 untuk mengurutkan kembali key dan value di dalam Shared Preference
+    private void reGenerateAndShortSP(){
+        SharedPreferences todosPref = getSharedPreferences("todosPref", MODE_PRIVATE);
+        SharedPreferences.Editor todosPrefEditor = todosPref.edit();
+        // Hapus semua data di Shared Preference
+        todosPrefEditor.clear();
+        todosPrefEditor.apply();
+
+        // Isi ulang Shared Preferences dengan data dari array list yang sudah otomatis terurut
+        for (int i = 0; i < data.size(); i++){
+            String key = String.valueOf(i);
+            todosPrefEditor.putString(key, data.get(i));
+        }
+         /*int i = 0;
+        for (String item: data) {
+            String key = String.valueOf(i);
+            todosPrefEditor.putString(key,item);
+            i++;
+        }*/
+         todosPrefEditor.apply();
+
+    }
+
 }
+
