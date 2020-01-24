@@ -65,7 +65,9 @@ public class MainActivity extends AppCompatActivity {
                 // Panggil method deleteItem()
 
                 deleteItem (position);
-                // Langkah 10.
+                // Langkah 10.2 Panggil method deleteFromSP untuk menghapus data dari Shared Preferences
+                deleteFromSP(position); // Sampai sini akan terjadi error karena key di SP tidak berurutan
+
                 return false;
             }
         });
@@ -168,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences todosPref = getSharedPreferences("todosPref", MODE_PRIVATE);
         // Cek dalam SP ada data atau tidak
         if (todosPref.getAll().size() > 0){
+
             // Masukkan semua data di SP ke array list data
             for (int i = 0; i < todosPref.getAll().size(); i++){
                 String key = String.valueOf(i);
@@ -175,7 +178,17 @@ public class MainActivity extends AppCompatActivity {
                 data.add(item);
             }
         }
+
     }
 
-
+    // Langkah 10.1 Menghapus data dari Shared Preferences
+    // Buat method hapus data dari Shared Preferences
+    private void deleteFromSP(int position){
+        String key = String.valueOf(position);
+        SharedPreferences todosPref = getSharedPreferences("todosPref", MODE_PRIVATE);
+        SharedPreferences.Editor todosPrefEditor = todosPref.edit();
+        todosPrefEditor.remove(key);
+        todosPrefEditor.apply();
+        }
+    }
 }
