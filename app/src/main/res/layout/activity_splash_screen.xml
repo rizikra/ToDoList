@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:gravity="center"
-    tools:context=".SplashScreen">
+    tools:context=".SplashScreen"
+    android:orientation="vertical">
 
 
     <ImageView
@@ -17,5 +18,7 @@
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+  
 
 </LinearLayout>

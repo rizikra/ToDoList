@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
@@ -280,9 +279,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                // Langkah 12.3 Panggil method editItem() di bawah yang telah dibuat pada langkah 12.2
-                editItem (position, edtTodo.getText().toString());
-
+                if (edtTodo.length() == 0){
+                    Toast.makeText(getApplicationContext(), "No data added", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    // Langkah 12.3 Panggil method editItem() di bawah yang telah dibuat pada langkah 12.2
+                    editItem (position, edtTodo.getText().toString());
+                }
             }
         });
         dialog.setNegativeButton("Cancel", null);
