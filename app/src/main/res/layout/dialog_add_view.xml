@@ -8,6 +8,9 @@
         android:id="@+id/edt_todo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="What do you want to do?" />
+        android:hint="ex. Playing Football"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:lines="2"/>
 
 </LinearLayout>

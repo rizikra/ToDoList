@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
@@ -57,27 +58,52 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Langkah 7.1 Buat onItemLongClickListener di list view untuk hapus data
-        lvTodos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+
+
+
+        // Langkah 7.1 Buat onItemClickListener di list view untuk hapus data
+        lvTodos.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Panggil method deleteItem()
 
                 deleteItem (position);
                 // Langkah 10.2 Panggil method deleteFromSP untuk menghapus data dari Shared Preferences
                 deleteFromSP(position); // Sampai sini akan terjadi error karena key di SP tidak berurutan
-
-                return false;
             }
         });
 
         // Langkah 12.4 Buat OnItemClickListener dan panggil method showDialogEdit()
         lvTodos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Panggil method showDialogEdit()
-                showDialogEdit(position);
+            public void onItemClick(AdapterView<?> parent, View view, final int position, final long id) {
+
+                AlertDialog.Builder builderPilihAksi = new AlertDialog.Builder(MainActivity.this);
+                builderPilihAksi.setTitle("''"+arrayAdapter.getItem(position)+"''");
+                builderPilihAksi.setMessage("So, what would you do?");
+
+                //Fitur Mengubah Kegiatan
+                builderPilihAksi.setPositiveButton("Change", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Panggil Method
+                        showDialogEdit(position);
+                    }
+                });
+
+                //Fitur Menghapus Kegiatan
+                builderPilihAksi.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Panggil Method
+                        deleteItem(position);
+                    }
+                });
+
+                builderPilihAksi.setNeutralButton("Cancel", null);
+                builderPilihAksi.create();
+                builderPilihAksi.show();
             }
         });
     }
@@ -105,26 +131,32 @@ public class MainActivity extends AppCompatActivity {
         edtTodo = view.findViewById(R.id.edt_todo);
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Mau ngapain lagi nich?");
+        dialog.setTitle("What do you want to do?");
         dialog.setView(view);
         dialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                // Langkah 8.2 Hitung size dari arraylist data untuk dijadikan calon key untuk SP :
+                if (edtTodo.length() == 0){
+                    Toast.makeText(getApplicationContext(), "No data added", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    // Langkah 8.2 Hitung size dari arraylist data untuk dijadikan calon key untuk SP :
 
-                int newKey = data.size();
+                    int newKey = data.size();
 
-                String item = edtTodo.getText().toString();
+                    String item = edtTodo.getText().toString();
 
-                data.add(item); // tambah data ke object ArrayList data.
-                arrayAdapter.notifyDataSetChanged(); // merefresh list view
+                    data.add(item); // tambah data ke object ArrayList data.
+                    arrayAdapter.notifyDataSetChanged(); // merefresh list view
 
-                // Langkah 8.3 Tambahkan data ke Shared Preferences
-                // Panggil method addToSP() untuk menyimpan data ke SP
-                addToSP(newKey, item);
+                    // Langkah 8.3 Tambahkan data ke Shared Preferences
+                    // Panggil method addToSP() untuk menyimpan data ke SP
+                    addToSP(newKey, item);
 
-                Toast.makeText(getApplicationContext(),String.valueOf(newKey), Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(),String.valueOf(newKey), Toast.LENGTH_LONG).show();
+
+                }
             }
         });
         dialog.setNegativeButton("Cancel",null);
@@ -141,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Buat alert dialog
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Yakin akan dihapus ?");
+        dialog.setTitle("Are you sure want to delete ?");
         dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -204,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
         todosPrefEditor.apply();
     }
 
-        // Langkah 11.1 Fix Error di langkah 10 untuk mengurutkan kembali key dan value di dalam Shared Preference
+    // Langkah 11.1 Fix Error di langkah 10 untuk mengurutkan kembali key dan value di dalam Shared Preference
     private void reGenerateAndSortSP(){
         SharedPreferences todosPref = getSharedPreferences("todosPref", MODE_PRIVATE);
         SharedPreferences.Editor todosPrefEditor = todosPref.edit();
@@ -223,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
             todosPrefEditor.putString(key,item);
             i++;
         }*/
-         todosPrefEditor.apply();
+        todosPrefEditor.apply();
 
     }
 
@@ -242,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
         //edtTodo.setText(data.get(position)); //diambil dari array list : alternatif dari cara diatas ini.
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("So, actually what you want to do ?");
+        dialog.setTitle("What you want to change?");
         dialog.setView(view);
         dialog.setPositiveButton("Change It", new DialogInterface.OnClickListener() {
             @Override
@@ -270,6 +302,5 @@ public class MainActivity extends AppCompatActivity {
         // Refresh list view
         arrayAdapter.notifyDataSetChanged();
     }
-
 }
 
